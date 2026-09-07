@@ -1,7 +1,7 @@
 """
 MessCleaner
 
-Version : v0.1.0
+Version : v0.2.1
 
 Author : Pratham Singh Thakur
 
@@ -20,6 +20,8 @@ Active Development
 
 import os
 import shutil
+from pathlib import Path
+from datetime import datetime
 
 categories = {
     "Images": [
@@ -116,72 +118,159 @@ categories = {
     ]
 }
 
-# Create a new file if it doesn't already exist
-def create_file():
-    file_name = input("Enter filename: ")
-    file_ext = input("Enter file extension: ")
-    file = file_name+"."+file_ext
-    try:
-        with open(file, "x") as file:
-            print(f"{file} created successfully!\n")
-    except FileExistsError:
-        print(f"{file_name} already exists.\n")
-    except Exception as e:
-        print(f"Some error occurred...  {e}\n")
 
-# Display all files and directories in the current working directory
-def view_all_files():
-    files = os.listdir()
-    
-    if not files:
-        print("No files found...\n")
-    else:
-        for file in files:
-            if os.path.isdir(file):
-                print(f"{file}/")
-            else:
-                print(file)
+# Calculate the total size of a folder including all subfolders
+def get_folder_size(folder):
+    total_size = 0
 
-# Remove an existing file
-def delete_file():
-    filename = input("Enter filename: ")
-    try:
-        os.remove(filename)
-        print(f"{filename} deleted successfully!\n")
-    except FileNotFoundError:
-        print(f"{filename} not found.\n")
-    except Exception as e:
-        print(f"Some error occurred...  {e}\n")
+    for item in folder.rglob("*"):
+        if item.is_file():
+            try:
+                total_size += item.stat().st_size
+            except OSError:
+                pass
 
-# Read and display file contents
-def read_file_content():
-    filename = input("Enter filename: ")
-    try:
-        with open(filename, "r") as file:
-            content = file.read()
-            if content=="":
-                print(f"{filename} is empty.\n")
-            else:
-                print(f"Content of {filename}-->\n{content}\n")
-    except FileNotFoundError:
-        print(f"{filename} not found.\n")
-    except Exception as e:
-        print(f"Some error occurred...  {e}\n")
+    return total_size
 
-# Append new text to an existing file
-def append_to_file():
-    filename = input("Enter filename: ")
-    try:
-        with open(filename,"a+") as file:
-            content = input("Enter content to append: ")
-            print(f"Appending content to {filename}...\n")
-            file.write(content + "\n")
-            print(f"Content appended successfully!\n")
 
-    except FileNotFoundError:
-        print(f"{filename} not found.\n")
-    except Exception as e:
-        print(f"Some error occurred...  {e}\n")
+# Determine the category of a file based on its extension
+def get_file_category(extension):
+    if not extension:
+        return "No Extension"
+
+    for category_name, extensions in categories.items():
+        if extension in extensions:
+            return category_name
+
+    return "Others"
+
+
+# Convert a timestamp into a readable date and time
+def format_timestamp(timestamp):
+    return datetime.fromtimestamp(timestamp).strftime(
+        "%d %b %Y, %I:%M %p"
+    )
+
+
+# Convert file size into a readable format
+def format_size(size):
+    units = ["bytes", "KB", "MB", "GB", "TB"]
+
+    for unit in units:
+        if size < 1024:
+            if unit == "bytes":
+                return f"{size} {unit}"
+            return f"{size:.2f} {unit}"
+
+        size /= 1024
+
+    return f"{size:.2f} PB"
+
+
+# Count files and subfolders inside a folder
+def get_folder_counts(folder):
+    file_count = 0
+    folder_count = 0
+
+    for item in folder.rglob("*"):
+        if item.is_file():
+            file_count += 1
+        elif item.is_dir():
+            folder_count += 1
+
+    return file_count, folder_count
+
+
+# Get formatted timestamps for a file or folder
+def get_timestamps(path):
+    stats = path.stat()
+
+    return (
+        format_timestamp(stats.st_ctime),
+        format_timestamp(stats.st_mtime),
+        format_timestamp(stats.st_atime)
+    )
+
+
+# Display information about a file
+def display_file_information(path, extension, category, readable_size, created, modified, accessed):
+    print("\n🔍 File Information")
+    print("----------------------------")
+    print(f"📄 Name       : {path.name}")
+    print(f"📍 Full Path  : {path.resolve()}")
+    print(f"📝 Extension  : {extension if extension else 'None'}")
+    print(f"📂 Category   : {category}")
+    print(f"📦 Size       : {readable_size}")
+    print(f"📅 Created    : {created}")
+    print(f"📅 Modified   : {modified}")
+    print(f"📅 Accessed   : {accessed}")
+    print()
+
+
+# Display information about a folder
+def display_folder_information(path, readable_size, file_count, folder_count, created, modified, accessed):
+    print("\n🔍 Folder Information")
+    print("----------------------------")
+    print(f"📁 Name       : {path.name}")
+    print(f"📍 Full Path  : {path.resolve()}")
+    print(f"📦 Size       : {readable_size}")
+    print(f"📄 Files      : {file_count}")
+    print(f"📁 Subfolders : {folder_count}")
+    print(f"📅 Created    : {created}")
+    print(f"📅 Modified   : {modified}")
+    print(f"📅 Accessed   : {accessed}")
+    print()
+
+
+# Display a directory and its contents as a hierarchical tree
+def display_directory_tree(folder, prefix="", depth=0):
+    items = sorted(
+        Path(folder).iterdir(),
+        key=lambda item: (item.is_file(), item.name.lower())
+    )
+
+    for index, item in enumerate(items):
+        is_last = index == len(items) - 1
+        connector = "└── " if is_last else "├── "
+
+        if item.is_dir():
+            print(f"{prefix}{connector}📁 {item.name}")
+
+            # Increase indentation when displaying the contents of a subfolder
+            next_prefix = prefix + ("    " if is_last else "│   ")
+            display_directory_tree(item, next_prefix, depth + 1)
+
+            # Add spacing only between first-level folders
+            if depth == 0 and not is_last:
+                print()
+
+        else:
+            print(f"{prefix}{connector}📄 {item.name}")
+
+# Browse the contents of a selected directory
+def browse_directory():
+    folder = input("Enter directory path: ").strip()
+
+    # Check whether the given path exists
+    if not os.path.exists(folder):
+        print("Folder not found.\n")
+        return
+
+    # Make sure the given path is a directory
+    if not os.path.isdir(folder):
+        print("The given path is not a folder.\n")
+        return
+
+    # Display the selected directory and its contents
+    folder_path = Path(folder)
+
+    print(f"\n📂 {folder_path.name}")
+    print("----------------------------")
+
+    display_directory_tree(folder_path)
+
+    print()
+
 
 # Organize files into category-wise folders
 def organize_files():
@@ -269,9 +358,10 @@ def organize_files():
 
     print("\nOrganization completed.\n")
 
+
 # Display basic statistics of a folder
 def folder_statistics():
-    folder = input("Enter folder path: ")
+    folder = input("Enter folder path: ").strip()
 
     if not os.path.exists(folder):
         print("Folder not found.\n")
@@ -288,13 +378,13 @@ def folder_statistics():
     total_folders = 0
     total_size = 0
 
-    category_stats = {}
-
-    for category in categories:
-        category_stats[category] = {
+    category_stats = {
+        category: {
             "files": 0,
             "size": 0
         }
+        for category in categories
+    }
 
     category_stats["Others"] = {
         "files": 0,
@@ -311,12 +401,7 @@ def folder_statistics():
             total_size += file_size
 
             file_extension = os.path.splitext(item)[1].lower()
-            category = "Others"
-
-            for category_name, extensions in categories.items():
-                if file_extension in extensions:
-                    category = category_name
-                    break
+            category = get_file_category(file_extension)
 
             category_stats[category]["files"] += 1
             category_stats[category]["size"] += file_size
@@ -330,20 +415,70 @@ def folder_statistics():
     print(f"📂 Folder         : {os.path.basename(os.path.normpath(folder))}")
     print(f"📄 Files          : {total_files}")
     print(f"📁 Subfolders     : {total_folders}")
-    print(f"💾 Total Size     : {total_size} bytes")
+    print(f"💾 Total Size     : {format_size(total_size)}")
 
     print("\n📂 File Categories")
     print("----------------------------")
 
     for category, stats in category_stats.items():
         if stats["files"] > 0:
+            file_count = stats["files"]
+            file_word = "file" if file_count == 1 else "files"
             print(
                 f"{category:<18}: "
-                f"{stats['files']} files | "
-                f"{stats['size']} bytes"
+                f"{file_count} {file_word} | "
+                f"{format_size(stats['size'])}"
             )
     print()
 
+
+# Display detailed information about a file or folder
+def path_information():
+    path_name = input("Enter file or folder path: ").strip()
+    path = Path(path_name)
+
+    if not path.exists():
+        print("File or folder not found.\n")
+        return
+
+    try:
+        created, modified, accessed = get_timestamps(path)
+
+        if path.is_file():
+            extension = path.suffix.lower()
+            category = get_file_category(extension)
+            readable_size = format_size(path.stat().st_size)
+
+            display_file_information(
+                path,
+                extension,
+                category,
+                readable_size,
+                created,
+                modified,
+                accessed
+            )
+
+        elif path.is_dir():
+            total_size = get_folder_size(path)
+            readable_size = format_size(total_size)
+            file_count, folder_count = get_folder_counts(path)
+
+            display_folder_information(
+                path,
+                readable_size,
+                file_count,
+                folder_count,
+                created,
+                modified,
+                accessed
+            )
+
+    except PermissionError:
+        print("Permission denied. Cannot access this path.\n")
+
+    except OSError as e:
+        print(f"Could not retrieve information: {e}\n")
 
 
 while True:
@@ -353,16 +488,13 @@ while True:
 ║             v0.2.0               ║
 ╚══════════════════════════════════╝
 
-1. 📄 Create File
-2. 📂 View Files
-3. 🗑️  Delete File
-4. 📖 Read File
-5. ✍️  Append Content
-6. 🧹 Organize Files
-7. 📊 Folder Statistics 
-8. 🔍 File Information (🚧 Coming soon)
-9. ↩️  Undo Last Operation (🚧 Coming soon)
-10. 🚪 Exit
+
+1. 📂 Browse Directory
+2. 🧹 Organize Files
+3. 📊 Folder Statistics 
+4. 🔍 Path Information 
+5. ↩️  Undo Last Operation (🚧 Coming soon)
+6. 🚪 Exit
 
 """)
 
@@ -370,26 +502,16 @@ while True:
     print()
 
     if choice == "1":
-        create_file()
+        browse_directory()
     elif choice == "2":
-        view_all_files()
-    elif choice == "3":
-        delete_file()
-    elif choice == "4":
-        read_file_content()
-    elif choice == "5":
-        append_to_file()
-    elif choice == "6":
         organize_files()
-    elif choice == "7":
+    elif choice == "3":
         folder_statistics()
-    elif choice == "8":
+    elif choice == "4":
+        path_information()
+    elif choice == "5":
         pass
-    elif choice == "9":
-        pass
-    elif choice == "10":
+    elif choice == "6":
         break
-
-
     else:
         print("Invalid choice! Please try again.\n")

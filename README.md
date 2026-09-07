@@ -1,131 +1,277 @@
 # 🧹 MessCleaner
 
-> **A Python-based command-line file manager evolving into an intelligent AI-powered file management system.**
+> **A Python-based command-line file manager evolving into an intelligent file management system.**
 
 ![Python](https://img.shields.io/badge/Python-3.x-blue?logo=python)
-![Version](https://img.shields.io/badge/Version-v0.2.0-success)
-![Status](https://img.shields.io/badge/Status-Active%20Development-orange)
+![Version](https://img.shields.io/badge/Version-0.2.0-orange)
+![Status](https://img.shields.io/badge/Status-Active%20Development-yellow)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
 ---
 
-# 📖 About
+## 📌 About
 
-MessCleaner is an open-source Python project that started as a simple command-line file manager and is designed to evolve into an intelligent AI-powered file management system.
+**MessCleaner** is an open-source Python project designed to simplify file management through automation.
 
-The current version provides essential file management operations, automatic file organization, and basic folder statistics while building a foundation for future intelligent features such as duplicate detection, semantic search, automation, natural language commands, and AI-assisted file management.
+The project currently provides a command-line interface for organizing files, browsing directory structures, viewing folder statistics, and retrieving detailed information about files and folders.
 
-This project is part of my learning journey in Python, software engineering, and Artificial Intelligence.
-
----
-
-## 📸 Preview
-
-![MessCleaner Demo](screenshots/terminal-v0.2.png)
+The long-term goal is to evolve MessCleaner into a more intelligent file management system with features such as persistent operation history, safe undo functionality, intelligent file organization, duplicate detection, AI-assisted search, automation, and eventually a graphical user interface.
 
 ---
 
-# ✨ Current Features
+## ✨ Current Features
 
-### 📄 File Management
+### 📂 1. Browse Directory
 
-* 📄 Create new files
-* 📂 View files and folders
-* 📖 Read file contents
-* ✍️ Append text to files
-* 🗑️ Delete files
-* ⚠️ Error handling for invalid operations
+Browse a directory using a recursive tree-style display.
 
-### 🧹 File Organization
+Features include:
 
-* 📁 Automatically organize files into category-based folders
-* 🔍 Detect file categories using file extensions
-* 📦 Supports multiple file types and categories
-* 🔄 Handles duplicate filenames automatically
-* 👀 Shows a preview before moving files
-* ❌ Allows the user to cancel the operation
+* Recursive folder traversal
+* Hierarchical tree structure
+* 📁 Folder and 📄 file distinction
+* Alphabetical sorting
+* Folders displayed before files
+* Clear indentation showing folder ownership
+* Spacing between first-level folders for better readability
 
-### 📊 Folder Statistics
-
-* 📄 Count files in a folder
-* 📁 Count direct subfolders
-* 💾 Calculate total file size
-* 🗂️ Display file count by category
-* 💽 Display storage used by each category
-* ❓ Automatically classify unknown file types as `Others`
-
-> **Note:** Folder Statistics currently scans only the direct contents of the selected folder. Recursive folder analysis is planned for a future version.
-
-### 💻 Command-Line Interface
-
-* 🔢 Interactive menu-based interface
-* 🖥️ Terminal-based workflow
-* 🛡️ Basic validation and error handling
-
----
-
-# 🚀 Future Roadmap
-
-MessCleaner is actively being developed. Planned features include:
-
-* 📊 Advanced Folder Analyzer
-* 🔄 Recursive folder scanning
-* 📈 Storage visualization and charts
-* 📦 Batch file operations
-* 🔍 Duplicate file detection
-* 🧠 Smart file insights
-* 🕒 File age and activity analysis
-* 📏 Large file analysis
-* 🗑️ Cleanup candidate detection
-* ↩️ Undo support
-* 👀 Folder monitoring
-* 🔎 Smart file search
-* 🧠 Semantic search using AI
-* 🤖 AI-powered file classification
-* 💬 Natural language commands
-* 🎙️ Voice commands
-* 🖥️ Modern GUI
-* 🔒 File encryption
-* ☁️ Cloud synchronization
-* 🔌 Plugin support
-* 🧠 Local AI model integration
-
----
-
-# 🛠️ Technologies Used
-
-| Technology | Purpose                                 |
-| ---------- | --------------------------------------- |
-| Python     | Core programming language               |
-| `os`       | File and directory operations           |
-| `shutil`   | File organization and moving operations |
-
-MessCleaner currently uses only Python's **standard library**, so no external Python packages are required.
-
----
-
-# 📂 Project Structure
+Example:
 
 ```text
-MessCleaner/
-│
-├── main.py
-├── README.md
-├── LICENSE
-├── .gitignore
-├── requirements.txt
-└── screenshots/
-    └── terminal-demo.png
+📂 Downloads
+├── 📁 Projects
+│   ├── 📄 main.py
+│   ├── 📁 data
+│   │   ├── 📄 dataset.csv
+│   │   └── 📄 results.csv
+│   └── 📄 README.md
+
+├── 📁 Images
+│   ├── 📄 photo.jpg
+│   └── 📄 wallpaper.png
+
+└── 📄 notes.txt
 ```
 
 ---
 
-# ⚙️ Installation
+### 🧹 2. Organize Files
+
+Automatically organizes files into category-based folders according to their file extensions.
+
+Supported categories include:
+
+* 🖼️ Images
+* 🎬 Videos
+* 🎵 Music
+* 📄 Documents
+* 📊 Spreadsheets
+* 📽️ Presentations
+* 📦 Archives
+* 💻 Applications
+* 📚 Libraries
+* 👨‍💻 Code
+* 🔤 Fonts
+* 🗄️ Data
+* 💬 Subtitles
+* 🧊 3D Models
+* 📐 CAD
+* 🎨 Design
+* 💿 Disk Images
+* 📝 Log Files
+* 📁 Others
+
+Before moving files, MessCleaner displays a preview and asks for confirmation.
+
+If a file with the same name already exists in the destination, MessCleaner automatically generates a new filename such as:
+
+```text
+file.txt
+file_1.txt
+file_2.txt
+```
+
+---
+
+### 📊 3. Folder Statistics
+
+Displays statistics for the **direct contents** of a selected folder.
+
+Information includes:
+
+* Total files
+* Total direct subfolders
+* Total size
+* File count by category
+* Size of each file category
+
+Example:
+
+```text
+📊 Folder Statistics
+----------------------------
+📂 Folder         : Downloads
+📄 Files          : 26
+📁 Subfolders     : 2
+💾 Total Size     : 602.55 MB
+
+📂 File Categories
+----------------------------
+Images            : 4 files | 6.54 KB
+Documents         : 15 files | 5.09 MB
+Spreadsheets      : 3 files | 59.72 KB
+Archives          : 3 files | 597.21 MB
+Code              : 1 file | 486 bytes
+```
+
+> **Note:** Folder Statistics intentionally analyzes only the direct contents of the selected folder. Recursive folder analysis is handled by the Path Information feature.
+
+---
+
+### 🔍 4. Path Information
+
+Provides detailed information about a selected file or folder.
+
+#### For files:
+
+* File name
+* Full path
+* File extension
+* File category
+* File size
+* Creation time
+* Modification time
+* Access time
+
+#### For folders:
+
+* Folder name
+* Full path
+* Total recursive size
+* Total files
+* Total subfolders
+* Creation time
+* Modification time
+* Access time
+
+File sizes are displayed in human-readable units such as:
+
+```text
+486 bytes
+6.54 KB
+5.09 MB
+602.55 MB
+```
+
+---
+
+## 🚧 Upcoming Features
+
+### ↩️ Undo Last Operation
+
+MessCleaner will support safely undoing the most recent file-management operation.
+
+The planned system will maintain structured operation history so that MessCleaner knows exactly:
+
+```text
+Original Location → New Location
+```
+
+The Undo system will also verify files and destinations before restoring them to prevent accidental overwriting or data loss.
+
+---
+
+### 📝 Persistent Operation History
+
+MessCleaner will maintain two forms of operation history:
+
+#### `operations.log`
+
+A human-readable log that allows users to see:
+
+* When an operation happened
+* What operation was performed
+* Which files were affected
+* Where files were moved
+
+#### `operations.json`
+
+A structured machine-readable record designed for MessCleaner itself.
+
+This will allow the Undo system to retrieve previous operations without having to parse human-readable log text.
+
+---
+
+### 🛡️ Error Logging
+
+A dedicated error log system is planned.
+
+Whenever an exception is caught, MessCleaner will record useful information such as:
+
+* Date and time
+* Operation/function
+* File or path involved
+* Error message
+
+Planned structure:
+
+```text
+logs/
+├── operations.log
+├── operations.json
+└── errors.log
+```
+
+This will make troubleshooting and debugging much easier.
+
+---
+
+## 🗂️ File Categories
+
+MessCleaner currently recognizes a wide range of file extensions.
+
+| Category      | Examples                                             |
+| ------------- | ---------------------------------------------------- |
+| Images        | `.jpg`, `.png`, `.gif`, `.webp`, `.svg`              |
+| Videos        | `.mp4`, `.mkv`, `.avi`, `.mov`                       |
+| Music         | `.mp3`, `.wav`, `.flac`, `.aac`                      |
+| Documents     | `.pdf`, `.docx`, `.txt`, `.md`                       |
+| Spreadsheets  | `.xls`, `.xlsx`, `.csv`, `.ods`                      |
+| Presentations | `.ppt`, `.pptx`, `.odp`                              |
+| Archives      | `.zip`, `.rar`, `.7z`, `.tar`                        |
+| Applications  | `.exe`, `.msi`, `.apk`, `.deb`                       |
+| Libraries     | `.dll`, `.so`, `.dylib`                              |
+| Code          | `.py`, `.js`, `.java`, `.cpp`, `.html`, `.css`, etc. |
+| Fonts         | `.ttf`, `.otf`, `.woff`, `.woff2`                    |
+| Data          | `.db`, `.sqlite`, `.parquet`, `.pkl`                 |
+| Subtitles     | `.srt`, `.ass`, `.vtt`                               |
+| 3D Models     | `.obj`, `.fbx`, `.blend`, `.gltf`                    |
+| CAD           | `.dwg`, `.dxf`, `.step`                              |
+| Design        | `.psd`, `.ai`, `.eps`, `.fig`                        |
+| Disk Images   | `.iso`, `.img`, `.dmg`, `.vmdk`                      |
+| Log Files     | `.log`                                               |
+| Others        | Unrecognized extensions                              |
+
+---
+
+## 🛠️ Technologies Used
+
+* **Python 3.x**
+* `os`
+* `pathlib`
+* `shutil`
+* `datetime`
+
+The project currently uses Python's standard library without requiring external packages.
+
+---
+
+## 🚀 Getting Started
 
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/pratham-MATRIX/Mess-Cleaner-AI.git
+git clone https://github.com/Pratham-Singh-Thakur/Mess-Cleaner-AI.git
 ```
 
 ### 2. Navigate into the project
@@ -140,148 +286,107 @@ cd Mess-Cleaner-AI
 python main.py
 ```
 
-> Python 3.x is required.
-
 ---
 
-# 💻 Usage
-
-After running MessCleaner, the main menu provides the following options:
+## 🖥️ Main Menu
 
 ```text
-1. 📄 Create File
-2. 📂 View Files
-3. 🗑️  Delete File
-4. 📖 Read File
-5. ✍️  Append Content
-6. 🧹 Organize Files
-7. 📊 Folder Statistics
-8. 🔍 File Information (Coming soon)
-9. ↩️  Undo Last Operation (Coming soon)
-10. 🚪 Exit
+╔══════════════════════════════════╗
+║        🧹 MessCleaner ✨         ║
+║             v0.2.1               ║
+╚══════════════════════════════════╝
+
+1. 📂 Browse Directory
+2. 🧹 Organize Files
+3. 📊 Folder Statistics
+4. 🔍 Path Information
+5. ↩️  Undo Last Operation (🚧 Coming soon)
+6. 🚪 Exit
 ```
 
-### 🧹 Organize Files
+---
 
-Select option `6` and provide the folder path.
+## 📈 Project Roadmap
 
-MessCleaner will:
+### Version 0.1.0
 
-1. Scan the folder
-2. Identify file types
-3. Assign files to categories
-4. Show the planned changes
-5. Ask for confirmation
-6. Organize the files automatically
+* [x] Basic command-line interface
+* [x] Basic file management functionality
 
-### 📊 Folder Statistics
+### Version 0.2.0
 
-Select option `7` and provide a folder path.
+* [x] Recursive directory browser
+* [x] Tree-style directory visualization
+* [x] File categorization system
+* [x] Category-based file organization
+* [x] Duplicate filename handling
+* [x] Folder statistics
+* [x] Detailed file information
+* [x] Detailed folder information
+* [x] Human-readable file sizes
+* [x] Improved timestamps
+* [ ] Undo Last Operation
+* [ ] Persistent operation history
+* [ ] Error logging
 
-MessCleaner will display:
+### Future Versions
 
-* Total number of files
-* Total number of subfolders
-* Total storage used
-* File count by category
-* Storage used by each category
+Potential future features include:
+
+* 🤖 AI-assisted file organization
+* 🔍 Intelligent file search
+* 🧬 Duplicate file detection
+* 🧹 Advanced cleanup tools
+* 📊 Advanced storage analysis
+* ⚙️ Automated file-management rules
+* 📝 Detailed activity history
+* 🛡️ Advanced error recovery
+* 🖥️ Graphical User Interface
+* 🚀 Performance improvements
+* 🔌 Plugin/extension system
 
 ---
 
-# 📌 Project Status
+## 🧠 Design Philosophy
 
-**Current Version**
+MessCleaner is being developed around a simple principle:
 
-`v0.2.0`
+> **Automate repetitive file-management tasks while keeping the user informed and in control.**
 
-**Development Status**
+The project aims to avoid blindly modifying files.
 
-🟢 Active Development
+Operations should be:
 
-MessCleaner is currently focused on building a reliable command-line foundation before introducing advanced analysis and AI functionality.
-
----
-
-# 🗺️ Development Progress
-
-| Feature                    | Status      |
-| -------------------------- | ----------- |
-| Basic File Manager         | ✅ Completed |
-| File Organization          | ✅ Completed |
-| Folder Statistics          | ✅ Completed |
-| Category-wise Statistics   | ✅ Completed |
-| Recursive Folder Analysis  | ⏳ Planned   |
-| Advanced Folder Analyzer   | ⏳ Planned   |
-| Batch Operations           | ⏳ Planned   |
-| Duplicate Detection        | ⏳ Planned   |
-| Smart File Insights        | ⏳ Planned   |
-| GUI Version                | ⏳ Planned   |
-| AI File Classification     | ⏳ Planned   |
-| Semantic Search            | ⏳ Planned   |
-| Voice Commands             | ⏳ Planned   |
-| Natural Language Interface | ⏳ Planned   |
-| Local AI Assistant         | ⏳ Planned   |
+* 👀 Transparent
+* 🛡️ Safe
+* ↩️ Reversible
+* 📝 Traceable
+* ⚡ Efficient
 
 ---
 
-# 🤝 Contributing
+## 📜 License
 
-Contributions, ideas, suggestions, and feature requests are always welcome.
+MessCleaner is released under the **MIT License**.
 
-If you'd like to improve MessCleaner, feel free to fork the repository and submit a pull request.
-
----
-
-# 📜 License
-
-This project is licensed under the **MIT License**.
-
-See the `LICENSE` file for more information.
+See the [`LICENSE`](LICENSE) file for more information.
 
 ---
 
-# 👨‍💻 Author
+## 👨‍💻 Author
 
 **Pratham Singh Thakur**
 
-Python Developer • AI/ML Student • Open Source Learner
+MessCleaner is an actively developed open-source project.
 
 ---
 
-# ⭐ Support
+## ⭐ Contributing
 
-If you find MessCleaner useful or interesting, consider giving the project a **⭐ Star** on GitHub.
+Contributions, ideas, bug reports, and feature suggestions are welcome.
 
-It motivates continued development and future improvements.
-
----
-
-## 🚧 Version History
-
-### v0.2.0 — Organization & Statistics
-
-* Added automatic file organization
-* Added category-based file classification
-* Added duplicate filename handling during organization
-* Added organization preview and confirmation
-* Added folder statistics
-* Added file and subfolder counting
-* Added total folder storage calculation
-* Added category-wise file statistics
-* Added category-wise storage statistics
-* Improved CLI menu
-
-### v0.1.0 — Initial Release
-
-* Initial command-line file manager
-* File creation
-* File deletion
-* Read file contents
-* Append content to files
-* View files and directories
-* Basic error handling
-* Foundation for future intelligent file management features
+If the project is useful, consider giving the repository a ⭐ on GitHub.
 
 ---
 
-> **"Every great software project starts with a simple first version."**
+**🧹 MessCleaner — Cleaning the mess, one file at a time. 🗿🔥**
