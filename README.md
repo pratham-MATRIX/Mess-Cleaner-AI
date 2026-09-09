@@ -3,7 +3,7 @@
 > **A Python-based command-line file manager evolving into an intelligent file management system.**
 
 ![Python](https://img.shields.io/badge/Python-3.x-blue?logo=python)
-![Version](https://img.shields.io/badge/Version-0.2.0-orange)
+![Version](https://img.shields.io/badge/Version-0.2.1-orange)
 ![Status](https://img.shields.io/badge/Status-Active%20Development-yellow)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
@@ -13,9 +13,9 @@
 
 **MessCleaner** is an open-source Python project designed to simplify file management through automation.
 
-The project currently provides a command-line interface for organizing files, browsing directory structures, viewing folder statistics, and retrieving detailed information about files and folders.
+The current version provides a command-line interface for browsing directories, organizing files into categories, viewing folder statistics, retrieving detailed file and folder information, safely undoing file organization operations, maintaining persistent operation history, and recording application errors for debugging.
 
-The long-term goal is to evolve MessCleaner into a more intelligent file management system with features such as persistent operation history, safe undo functionality, intelligent file organization, duplicate detection, AI-assisted search, automation, and eventually a graphical user interface.
+The long-term goal is to evolve MessCleaner into a more intelligent file management system with features such as intelligent file organization, duplicate detection, AI-assisted search, automation, advanced cleanup tools, and eventually a graphical user interface.
 
 ---
 
@@ -165,64 +165,109 @@ File sizes are displayed in human-readable units such as:
 
 ---
 
-## 🚧 Upcoming Features
+### ↩️ 5. Undo Last Operation
 
-### ↩️ Undo Last Operation
+MessCleaner can safely undo the most recent file-organization operation.
 
-MessCleaner will support safely undoing the most recent file-management operation.
-
-The planned system will maintain structured operation history so that MessCleaner knows exactly:
+The system maintains structured operation records containing information such as:
 
 ```text
 Original Location → New Location
 ```
 
-The Undo system will also verify files and destinations before restoring them to prevent accidental overwriting or data loss.
+When an operation is undone, MessCleaner:
+
+* Identifies the most recent operation
+* Restores affected files to their original locations
+* Handles duplicate filenames safely
+* Tracks operations that could not be completely undone
+* Removes empty category folders when possible
+* Preserves operation history for future use
+
+The Undo system is designed to work together with the file organization system so that organization remains reversible and traceable.
 
 ---
 
-### 📝 Persistent Operation History
+### 📜 6. Persistent Operation History
 
-MessCleaner will maintain two forms of operation history:
-
-#### `operations.log`
-
-A human-readable log that allows users to see:
-
-* When an operation happened
-* What operation was performed
-* Which files were affected
-* Where files were moved
+MessCleaner maintains operation history in **two formats**.
 
 #### `operations.json`
 
-A structured machine-readable record designed for MessCleaner itself.
+A structured machine-readable record used by MessCleaner to preserve operation data.
 
-This will allow the Undo system to retrieve previous operations without having to parse human-readable log text.
+It stores information such as:
+
+* Operation timestamp
+* Original file location
+* Destination file location
+* Category folder
+* Whether the category folder was created by MessCleaner
+
+This allows the Undo system to restore previous operations without parsing human-readable text.
+
+#### `data/operations.txt`
+
+A human-readable version of the operation history.
+
+It allows users to review:
+
+* When an operation occurred
+* How many files were moved
+* Which files were affected
+* Original locations
+* Destination locations
+* Categories involved
+* Category-folder creation information
+
+The JSON and TXT histories are maintained together whenever an operation is recorded.
 
 ---
 
-### 🛡️ Error Logging
+### 🛡️ 7. Error Logging
 
-A dedicated error log system is planned.
+MessCleaner includes a persistent application-wide error logging system.
 
-Whenever an exception is caught, MessCleaner will record useful information such as:
-
-* Date and time
-* Operation/function
-* File or path involved
-* Error message
-
-Planned structure:
+Errors are recorded in:
 
 ```text
-logs/
-├── operations.log
-├── operations.json
-└── errors.log
+data/errors.log
 ```
 
-This will make troubleshooting and debugging much easier.
+When an exception occurs, the error log can contain:
+
+* Date and time
+* Python exception type
+* Exact technical error message
+* Human-readable explanation of what happened
+* Suggested action for resolving the problem
+* Python traceback
+
+Example structure:
+
+```text
+============================================================
+MessCleaner Error
+============================================================
+
+Date       : 07 Sep 2026, 07:40 PM
+Error Type : PermissionError
+Message    : [technical Python error message]
+
+WHAT HAPPENED:
+MessCleaner could not access the requested file.
+
+SUGGESTED ACTION:
+Check that the file is accessible and that MessCleaner
+has permission to access it.
+
+TRACEBACK:
+[Python traceback]
+
+============================================================
+```
+
+The error logging system is designed so that a failure in the logging system itself does not crash MessCleaner.
 
 ---
 
@@ -260,9 +305,12 @@ MessCleaner currently recognizes a wide range of file extensions.
 * `os`
 * `pathlib`
 * `shutil`
+* `json`
 * `datetime`
+* `time`
+* `traceback`
 
-The project currently uses Python's standard library without requiring external packages.
+MessCleaner currently uses only Python's standard library and does not require external Python packages.
 
 ---
 
@@ -283,8 +331,36 @@ cd Mess-Cleaner-AI
 ### 3. Run MessCleaner
 
 ```bash
-python main.py
+python app.py
 ```
+
+---
+
+## 🗂️ Project Structure
+
+```text
+Mess-Cleaner-AI/
+│
+├── app.py
+├── README.md
+├── LICENSE
+├── requirements.txt
+├── operations.json
+│
+└── data/
+    ├── operations.txt
+    └── errors.log
+```
+
+### Generated Files
+
+| File                  | Purpose                                                     |
+| --------------------- | ----------------------------------------------------------- |
+| `operations.json`     | Structured persistent operation history used by MessCleaner |
+| `data/operations.txt` | Human-readable operation history                            |
+| `data/errors.log`     | Persistent application error log                            |
+
+> `operations.json` is kept in the project root because it is an internal data file required by MessCleaner. Users normally do not need to modify it manually.
 
 ---
 
@@ -300,8 +376,9 @@ python main.py
 2. 🧹 Organize Files
 3. 📊 Folder Statistics
 4. 🔍 Path Information
-5. ↩️  Undo Last Operation (🚧 Coming soon)
-6. 🚪 Exit
+5. ↩️  Undo Last Operation
+6. 📜 View Operation History
+7. 🚪 Exit
 ```
 
 ---
@@ -313,7 +390,7 @@ python main.py
 * [x] Basic command-line interface
 * [x] Basic file management functionality
 
-### Version 0.2.0
+### Version 0.2.0 / 0.2.1
 
 * [x] Recursive directory browser
 * [x] Tree-style directory visualization
@@ -325,13 +402,19 @@ python main.py
 * [x] Detailed folder information
 * [x] Human-readable file sizes
 * [x] Improved timestamps
-* [ ] Undo Last Operation
-* [ ] Persistent operation history
-* [ ] Error logging
+* [x] Undo Last Operation
+* [x] Persistent operation history
+* [x] JSON operation history
+* [x] Human-readable TXT operation history
+* [x] Persistent error logging
+* [x] Detailed exception information and traceback logging
+* [x] Error recovery for corrupted or invalid operation history
 
-### Future Versions
+---
 
-Potential future features include:
+## 🔮 Future Development
+
+Future versions may introduce features such as:
 
 * 🤖 AI-assisted file organization
 * 🔍 Intelligent file search
@@ -344,6 +427,8 @@ Potential future features include:
 * 🖥️ Graphical User Interface
 * 🚀 Performance improvements
 * 🔌 Plugin/extension system
+
+> These features are part of the long-term direction of MessCleaner and are not part of the current v0.2.1 release.
 
 ---
 
